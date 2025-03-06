@@ -8,8 +8,7 @@ import DetailedAssessment from "@/components/detailedAssessment";
 export default function Home() {
   const [detectedDiseases, setDetectedDiseases] = useState<string[]>([]);
   const [selectedDisease, setSelectedDisease] = useState<string | null>(null);
-  const [assessmentData, setAssessmentData] = useState<unknown | null>(null);
-
+  const [assessmentData, setAssessmentData] = useState<Record<string, string> | null>(null);
   return (
     <div className="max-w-2xl mx-auto p-4">
       {!detectedDiseases.length ? (
@@ -26,7 +25,7 @@ export default function Home() {
       ) : !assessmentData ? (
         <DetailedAssessment disease={selectedDisease} onComplete={setAssessmentData} />
       ) : (
-        <Chat disease={selectedDisease} responses={assessmentData ? assessmentData : undefined} />
+        <Chat disease={selectedDisease} responses={assessmentData} />
       )}
     </div>
   );

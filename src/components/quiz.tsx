@@ -11,9 +11,7 @@ export default function Screening({ onDetectedDiseases }: { onDetectedDiseases: 
         try {
             const res = await fetch("http://127.0.0.1:8000/screening-questions",);
             const data = await res.json();
-            
-            console.log("API Response:", data);
-            
+                        
             if (data) {
               setQuestions(data);
               
