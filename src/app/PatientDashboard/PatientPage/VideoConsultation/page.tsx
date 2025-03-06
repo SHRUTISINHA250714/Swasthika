@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef } from 'react';
-import { MessageCircle, Stethoscope, Send, Paperclip, Smile } from 'lucide-react';
+import { MessageCircle, Stethoscope, Send, Paperclip } from 'lucide-react';
 
 interface Message {
   id: string;

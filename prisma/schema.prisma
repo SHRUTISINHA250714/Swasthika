@@ -23,6 +23,10 @@ model User {
   createdAt        DateTime          @default(now())
   doctor           Doctor?           @relation("DoctorPatients", fields: [doctorId], references: [id])
   doctorId         String?
+
+  GameProgress GameProgress[]
+
+  DailyTask DailyTask[]
 }
 
 enum Role {
@@ -142,4 +146,50 @@ model BadgeAssignment {
 
   user  User  @relation(fields: [userId], references: [id])
   badge Badge @relation(fields: [badgeId], references: [id])
+}
+
+model GameProgress {
+  id               String   @id @default(uuid())  
+  userId           String   // Player ID  
+  gameId           String   // Unique Game Identifier  
+  gameType         String   // Quiz, Puzzle, Speed Challenge, etc.  
+  sessionId        String?  // Optional, for tracking multiple sessions  
+  datePlayed       DateTime @default(now())  
+
+  // Core Gameplay Metrics  
+  score            Int      @default(0)  
+  completion       Boolean  @default(false)  
+  timeSpent        Int?     // Time in seconds  
+  accuracy         Int?     // % of correct answers  
+  difficulty       String   // Easy, Medium, Hard, Adaptive  
+  streak           Int?     @default(0) // Consecutive days played  
+
+  // Engagement & Behavioral Metrics  
+  retries         Int?      @default(0) // Number of retries
+  dropOff         Boolean   @default(false) // True if user quits before finishing
+  frustrationScore Int?     // Tracks frustration level (rage quits, retries)
+
+  // Gamification & Achievements  
+  badgesEarned    String[]  // Array of unlocked achievements  
+  challengesDone  Int?      // Number of completed challenges
+  
+  // Game-Specific Data  
+  gameData        Json?     // Custom game-specific tracking (flexible field)  
+
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+model DailyTask {
+  id          String   @id @default(uuid())  
+  userId      String   // Foreign key linking to User
+  disorder    String   // Depression, Anxiety, PTSD, etc.
+  severity    String   // mild, moderate, severe
+  week        Int      // 1 to 5
+  day         Int      // 1 to 7
+  task        String   // Task description
+  status      String   @default("pending") // pending, completed, skipped
+  reflection  String?  // User feedback for weekly adjustments
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
 }

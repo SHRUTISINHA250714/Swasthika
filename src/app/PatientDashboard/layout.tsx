@@ -1,7 +1,7 @@
 
 "use client";
 import { styled, Container, Box } from "@mui/material";
-import React, { useState } from "react";
+// import React, { useState } from "react";
 // import Header from "@/app/PatientDashboard/layout/header/Header";
 // import Sidebar from "@/app/PatientDashboard/layout/sidebar/Sidebar";
 
@@ -20,7 +20,7 @@ const PageWrapper = styled("div")(() => ({
 }));
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  // const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   return (
     <MainWrapper>
