@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  password         String // Hashed password for auth
+  name             String
+  role             Role              @default(PATIENT) // PATIENT, DOCTOR, ADMIN
+  quizzes          Result[]
+  progress         Progress[]
+  sentMessages     Message[]         @relation(name: "SenderRelation")
+  receivedMessages Message[]         @relation(name: "ReceiverRelation")
+  assessments      Assessment[]
+  badges           BadgeAssignment[]
+  quiz             Quiz[]
+  createdAt        DateTime          @default(now())
+  doctor           Doctor?           @relation("DoctorPatients", fields: [doctorId], references: [id])
+  doctorId         String?
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+model Quiz {
+  id        String   @id @default(uuid())
+  userId    String
+  disorder  Disorder @unique
+  score     Int
+  questions Json // Store questions as JSON
+  results   Result[]
+  category  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum Disorder {
+  PTSD
+  ANXIETY
+  DEPRESSION
+  OCD
+  EATING_DISORDER
+  STRESS
+  PANIC_DISORDER
+  SOCIAL_ANXIETY
+  ADDICTION
+}
+
+model Result {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  quizId    String
+  score     Int // Score from 1 to 10
+  severity  Severity // Mild, Moderate, Severe
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  quiz Quiz @relation(fields: [quizId], references: [id])
+}
+
+enum Severity {
+  MILD
+  MODERATE
+  SEVERE
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  disorder    Disorder
+  severity    Severity
+  title       String
+  description String
+  week        Int
+  createdAt   DateTime   @default(now())
+  progress    Progress[]
+}
+
+model Progress {
+  id        String   @id @default(uuid())
+  userId    String
+  taskId    String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  task Task @relation(fields: [taskId], references: [id])
+}
+
+model Assessment {
+  id        String   @id @default(uuid())
+  userId    String
+  week      Int
+  score     Int
+  feedback  String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Doctor {
+  id        String @id @default(uuid())
+  userId    String @unique
+  specialty String
+
+  patients User[] @relation("DoctorPatients")
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  senderId   String
+  receiverId String
+  content    String
+  sentAt     DateTime @default(now())
+
+  sender   User @relation(fields: [senderId], references: [id], name: "SenderRelation")
+  receiver User @relation(fields: [receiverId], references: [id], name: "ReceiverRelation")
+}
+
+model Badge {
+  id       String @id @default(uuid())
+  name     String @unique
+  criteria String
+
+  BadgeAssignment BadgeAssignment[]
+}
+
+model BadgeAssignment {
+  id        String   @id @default(uuid())
+  userId    String
+  badgeId   String
+  awardedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  badge Badge @relation(fields: [badgeId], references: [id])
+}
