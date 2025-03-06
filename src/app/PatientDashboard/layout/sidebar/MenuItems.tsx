@@ -32,12 +32,20 @@ const Menuitems = [
   {
     title: "Disease Prediction",
     icon: IconHeartbeat,
+<<<<<<< HEAD
     href: "/PatientDashboard/DiseasePrediction",
+=======
+    href: "/PatientDashboard/PatientPage/DiseasePrediction",
+>>>>>>> fae4a46b949cc5ba244cd0ea4b43fb5c521b344d
   },
   {
     title: "Exercise & Activity",
     icon: IconRun,
+<<<<<<< HEAD
     href: "/games",
+=======
+    href: "/PatientDashboard/PatientPage/ExerciseActivity",
+>>>>>>> fae4a46b949cc5ba244cd0ea4b43fb5c521b344d
   },
   {
     title: "Community",

@@ -1,4 +1,3 @@
-
 import React from "react";
 import Menuitems from "./MenuItems";
 import { usePathname } from "next/navigation";

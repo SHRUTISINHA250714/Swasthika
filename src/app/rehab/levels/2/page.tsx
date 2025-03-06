@@ -1,7 +1,7 @@
 "use client";
 
 import Level from "@/components/level/page";
-import { levelTwoChallenges } from "@/constants/page";
+import { levelTwoChallenges } from "@/lib/constants/page";
 
 export default function LevelTwoPage() {
   return (
