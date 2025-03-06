@@ -7,6 +7,7 @@ import {
   IconUsers,
   IconLogin,
   IconUserPlus,
+  IconListCheck,
 } from "@tabler/icons-react";
 
 const Menuitems = [
@@ -38,6 +39,11 @@ const Menuitems = [
     title: "Exercise & Activity",
     icon: IconRun,
     href: "/games",
+  },
+  {
+    title: "Task Management",
+    icon: IconListCheck,
+    href: "/TaskManagement",
   },
   {
     title: "Community",
