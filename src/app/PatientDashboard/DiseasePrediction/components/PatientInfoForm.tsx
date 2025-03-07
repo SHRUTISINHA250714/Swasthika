@@ -52,7 +52,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <User size={18} className="mr-2 text-emerald-500" />
                 Age
               </label>
@@ -73,7 +73,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <User size={18} className="mr-2 text-emerald-500" />
                 Gender
               </label>
@@ -97,7 +97,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <Heart size={18} className="mr-2 text-emerald-500" />
                 Blood Pressure (mmHg)
               </label>
@@ -117,7 +117,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <Droplet size={18} className="mr-2 text-emerald-500" />
                 Blood Sugar Level (mg/dL)
               </label>
@@ -137,7 +137,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <User size={18} className="mr-2 text-emerald-500" />
                 Height (cm)
               </label>
@@ -157,7 +157,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <User size={18} className="mr-2 text-emerald-500" />
                 Weight (kg)
               </label>
@@ -177,7 +177,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <User size={18} className="mr-2 text-emerald-500" />
                 Smoking Status
               </label>
@@ -200,7 +200,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <User size={18} className="mr-2 text-emerald-500" />
                 Alcohol Consumption
               </label>
@@ -223,7 +223,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <AlertCircle size={18} className="mr-2 text-emerald-500" />
                 Allergies
               </label>
@@ -243,7 +243,7 @@ const PatientInfoForm: React.FC<PatientInfoFormProps> = ({ onSubmit }) => {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.0 }}
             >
-              <label className="block text-gray-700 font-medium mb-2 flex items-center">
+              <label className=" text-gray-700 font-medium mb-2 flex items-center">
                 <AlertCircle size={18} className="mr-2 text-emerald-500" />
                 Existing Medical Conditions
               </label>

@@ -53,6 +53,32 @@ export default function ReflexRacer({ onComplete, onExit }: Props) {
     moveTarget();
   };
 
+  const submitGameProgress = async () => {
+    const gameProgress = {
+      gameId: "REFLEX_RACER",
+      score: score,
+      completion: true,
+      timeSpent: 30 - timeLeft,
+      difficulty: "Easy",
+    };
+
+    try {
+      const response = await fetch("/api/games/progress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gameProgress),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit game progress");
+      }
+    } catch (error) {
+      console.error("Error submitting game progress:", error);
+    }
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -60,6 +86,7 @@ export default function ReflexRacer({ onComplete, onExit }: Props) {
           setIsActive(false);
           clearInterval(timer);
           onComplete(score);
+          submitGameProgress();
           return 0;
         }
         return prev - 1;

@@ -227,7 +227,7 @@ async def generate_diet_chart(request: DetailedAssessmentRequest):
         print("Error:", e)
         raise HTTPException(status_code=500, detail=str(e))
 
-
+# BEFORE CHANGES FOR FORMATTING
 @app.post("/chat")
 async def chat(request: DetailedAssessmentRequest):
     """
@@ -268,3 +268,6 @@ async def chat(request: DetailedAssessmentRequest):
     except Exception as e:
         print("Error:", e)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
