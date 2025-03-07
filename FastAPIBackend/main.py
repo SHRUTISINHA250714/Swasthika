@@ -100,6 +100,31 @@ disease_specific_questions = {
         "Do you feel guilt or shame after eating?",
         "Do you use extreme methods (fasting, purging, excessive exercise) to control weight?"
     ],
+    "Stress": [
+        "Do you feel constantly pressured, even with small tasks?",
+        "Do you struggle to relax, even when you have free time?",
+        "Do you experience frequent headaches, muscle tension, or fatigue?"
+    ],
+    "Drug Recovery": [
+        "Do you experience intense urges to use drugs despite your commitment to recovery?",
+        "Do you feel tempted to return to old habits when facing emotional distress?",
+        "Do you struggle with maintaining motivation to stay sober?"
+    ],
+    "Anorexia Nervosa": [
+        "Do you often skip meals or eat significantly less than your body needs?",
+        "Do you feel intense fear or distress at the thought of gaining weight?",
+        "Do you exercise excessively to control your weight?"
+    ],
+    "Bulimia Nervosa": [
+        "Do you eat large amounts of food in a short time and feel out of control?",
+        "Do you use vomiting, fasting, or excessive exercise to compensate for overeating?",
+        "Do you feel ashamed or guilty after binge episodes?"
+    ],
+    "Binge Eating Disorder": [
+        "Do you eat until you feel uncomfortably full, even when not hungry?",
+        "Do you eat large amounts of food in secret or alone due to embarrassment?",
+        "Do you feel guilt, disgust, or shame after binge eating?"
+    ]
 }
 @app.get("/screening-questions")
 async def get_screening_questions():
@@ -132,20 +157,66 @@ async def detailed_assessment(request: DetailedAssessmentRequest):
         "questions": disease_specific_questions[disease]
     }
 
+# @app.post("/chat")
+# async def chat(request: DetailedAssessmentRequest):
+#     try:
+#         if not request.responses:
+#            raise HTTPException(status_code=400, detail="No responses p rovided")
+
+#         response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
+
+#         system_prompt = f"""
+#         You are a rehabilitation doctor specializing in {request.disease}. 
+#         The patient has answered the following questions regarding their condition:\n
+#         {response_text}
+        
+#         Based on this, provide expert medical advice, suggest therapy, and offer emotional support.
+#         """
+
+#         chat_history = [
+#             {"role": "system", "content": system_prompt},
+#             {"role": "user", "content": "What should I do next?"}
+#         ]
+
+#         response = llm.invoke(chat_history)
+#         response_text = response.content if hasattr(response, "content") else str(response)
+
+#         return {"response": response_text}
+
+#     except Exception as e:
+#         print("Error:", e)
+#         raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/chat")
 async def chat(request: DetailedAssessmentRequest):
     try:
         if not request.responses:
-           raise HTTPException(status_code=400, detail="No responses p rovided")
+            raise HTTPException(status_code=400, detail="No responses provided")
 
-        response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
+        # Format patient responses as a bullet list
+        response_text = "\n".join([f"- **{q}**: {a}" for q, a in request.responses.items()])
 
+        # System prompt for structured AI response
         system_prompt = f"""
         You are a rehabilitation doctor specializing in {request.disease}. 
         The patient has answered the following questions regarding their condition:\n
         {response_text}
-        
-        Based on this, provide expert medical advice, suggest therapy, and offer emotional support.
+
+        Based on this, provide expert medical advice in the following format:
+
+        **Diagnosis Overview:**  
+        - A brief explanation of the possible condition.
+
+        **Recommended Next Steps:**  
+        - Step-by-step guide on what the patient should do next.
+
+        **Therapy & Treatment Suggestions:**  
+        - Suggested medical or psychological treatments.
+
+        **Emotional Support Advice:**  
+        - Encouraging words and coping strategies.
+
+        Format the response with headings and bullet points for readability.
         """
 
         chat_history = [
@@ -153,10 +224,11 @@ async def chat(request: DetailedAssessmentRequest):
             {"role": "user", "content": "What should I do next?"}
         ]
 
+        # Get AI response
         response = llm.invoke(chat_history)
-        response_text = response.content if hasattr(response, "content") else str(response)
+        formatted_response = response.content if hasattr(response, "content") else str(response)
 
-        return {"response": response_text}
+        return {"response": formatted_response}
 
     except Exception as e:
         print("Error:", e)

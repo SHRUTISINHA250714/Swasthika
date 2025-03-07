@@ -36,9 +36,9 @@ export default function Chat({
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-bold">AI Consultation</h2>
+      <h2 className="text-2xl text-blue-900 font-bold">AI Consultation</h2>
       <button 
-        className="bg-purple-500 text-white px-4 py-2 mt-4 disabled:opacity-50"
+        className="bg-purple-500  rounded text-white px-4 py-2 mt-4 disabled:opacity-50"
         onClick={handleChat} 
         disabled={loading}
       >
