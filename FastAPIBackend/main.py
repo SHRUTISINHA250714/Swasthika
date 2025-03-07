@@ -132,20 +132,100 @@ async def detailed_assessment(request: DetailedAssessmentRequest):
         "questions": disease_specific_questions[disease]
     }
 
+
+# @app.post("/chat")
+# async def chat(request: DetailedAssessmentRequest):
+#     try:
+#         if not request.responses:
+#            raise HTTPException(status_code=400, detail="No responses p rovided")
+
+#         response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
+
+#         system_prompt = f"""
+#         You are a rehabilitation doctor specializing in {request.disease}. 
+#         The patient has answered the following questions regarding their condition:\n
+#         {response_text}
+        
+#         Based on this, provide expert medical advice, suggest therapy, and offer emotional support.
+#         Do not refer to any sort of person like as psycatrist, instead consider yourself as a doctor and ask the related questions and process them, if at the later stage, its too complicated than only refer to the doctor.otherwise,suggest things that the user can do by him self and keep it short and crisp.
+#         """
+
+#         chat_history = [
+#             {"role": "system", "content": system_prompt},
+#             {"role": "user", "content": "What should I do next?"}
+#         ]
+
+#         response = llm.invoke(chat_history)
+#         response_text = response.content if hasattr(response, "content") else str(response)
+
+#         return {"response": response_text}
+
+#     except Exception as e:
+#         print("Error:", e)
+#         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/diet")
+async def generate_diet_chart(request: DetailedAssessmentRequest):
+    """
+    Generates a personalized diet plan based on the user's disease and responses.
+    """
+    try:
+        response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
+
+        diet_prompt = f"""
+        You are a dietary expert specializing in creating health-focused meal plans.
+        The patient has been diagnosed with {request.disease} and provided the following details:\n
+        {response_text}
+        
+        Based on this information, suggest a structured diet plan that:
+        - Is simple and easy to follow.
+        - Avoids any references to doctors or medical professionals.
+        - Contains breakfast, lunch, dinner, and snack options.
+        - Includes key nutrients essential for managing {request.disease}.
+        - Avoids foods that may worsen the condition.
+        - Provides alternative food choices if necessary.
+
+        Ensure the response is formatted properly, short, and crisp.
+        """
+
+        chat_history = [
+            {"role": "system", "content": diet_prompt},
+            {"role": "user", "content": "What should my diet plan be?"}
+        ]
+
+        response = llm.invoke(chat_history)
+        response_text = response.content if hasattr(response, "content") else str(response)
+
+        return {"diet_plan": response_text}
+
+    except Exception as e:
+        print("Error:", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/chat")
 async def chat(request: DetailedAssessmentRequest):
+    """
+    Handles chat interaction for mental health recovery.
+    """
     try:
         if not request.responses:
-           raise HTTPException(status_code=400, detail="No responses p rovided")
+            raise HTTPException(status_code=400, detail="No responses provided")
 
         response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
 
         system_prompt = f"""
-        You are a rehabilitation doctor specializing in {request.disease}. 
-        The patient has answered the following questions regarding their condition:\n
+        You are a rehabilitation coach helping users recover from {request.disease}.
+        The user has answered the following questions regarding their condition:\n
         {response_text}
         
-        Based on this, provide expert medical advice, suggest therapy, and offer emotional support.
+        Based on this, provide step-by-step recovery suggestions, emotional support, 
+        and self-improvement exercises. Do not refer to a psychiatrist or doctor.
+        Instead, guide the user on what they can do themselves.
+        
+        The user should be able to ask follow-up questions, and responses should be 
+        clear, short, and actionable.
         """
 
         chat_history = [
