@@ -2,9 +2,9 @@
 "use client";
 // import RehabChatbot from "@/components/chatComponent"
 import { useState } from "react";
-import Screening from "@/components/quiz";
-import Chat from "@/components/chatComponent";
-import DetailedAssessment from "@/components/detailedAssessment";
+import Screening from "@/app/quiz";
+import Chat from "@/app/chatComponent";
+import DetailedAssessment from "@/app/detailedAssessment";
 export default function Home() {
   const [detectedDiseases, setDetectedDiseases] = useState<string[]>([]);
   const [selectedDisease, setSelectedDisease] = useState<string | null>(null);
