@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Search, 
-  MessageCircle, 
+  // MessageCircle, 
  
   BookOpen, 
   Users, 
@@ -27,20 +27,20 @@ const CommunityForum: React.FC = () => {
   const [activeTab, setActiveTab] = useState('knowledge-hub');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
+  // const container = {
+  //   hidden: { opacity: 0 },
+  //   show: {
+  //     opacity: 1,
+  //     transition: {
+  //       staggerChildren: 0.1
+  //     }
+  //   }
+  // };
   
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
+  // const item = {
+  //   hidden: { opacity: 0, y: 20 },
+  //   show: { opacity: 1, y: 0 }
+  // };
 
   const tabs = [
     { id: 'knowledge-hub', label: 'Medical Knowledge Hub', icon: <BookOpen size={18} /> },

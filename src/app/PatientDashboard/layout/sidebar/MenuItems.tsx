@@ -7,12 +7,18 @@ import {
   IconUsers,
   IconLogin,
   IconUserPlus,
+  IconListCheck,
 } from "@tabler/icons-react";
 
 const Menuitems = [
   {
     navlabel: true,
     subheader: "PATIENT DASHBOARD",
+  },
+  {
+    title: "Landing Page",
+    icon: IconHome2,
+    href: "/LandingPage",
   },
   {
     title: "Patient Dashboard",
@@ -35,9 +41,19 @@ const Menuitems = [
     href: "/PatientDashboard/DiseasePrediction",
   },
   {
+    title: "AI BOT",
+    icon: IconHeartbeat,
+    href: "/AIBot",
+  },
+  {
     title: "Exercise & Activity",
     icon: IconRun,
     href: "/games",
+  },
+  {
+    title: "Task Management",
+    icon: IconListCheck,
+    href: "/TaskManagement",
   },
   {
     title: "Community",
