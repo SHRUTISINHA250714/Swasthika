@@ -99,15 +99,24 @@ export default function ChatScreening({ onDetectedDiseases }: { onDetectedDiseas
 
   useEffect(() => {
     async function fetchQuestions() {
-      try {
-        const res = await fetch("http://127.0.0.1:8000/screening-questions");
-        const data = await res.json();
-        setQuestions(data);
-      } catch (error) {
-        console.error("Error fetching screening questions:", error);
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const res = await fetch("http://127.0.0.1:8000/screening-questions",);
+            const data = await res.json();
+                        
+            if (data) {
+              setQuestions(data);
+              
+            } else {    
+              setQuestions({});
+            }
+            
+          } catch (error) {
+            console.error("Error fetching screening questions:", error);
+            setQuestions({});
+          }
+          finally{
+            setLoading(false)
+          }
     }
     fetchQuestions();
   }, []);

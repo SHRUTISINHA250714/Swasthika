@@ -135,10 +135,11 @@ async def detailed_assessment(request: DetailedAssessmentRequest):
 @app.post("/chat")
 async def chat(request: DetailedAssessmentRequest):
     try:
-        # Format user responses for AI processing
+        if not request.responses:
+           raise HTTPException(status_code=400, detail="No responses p rovided")
+
         response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
 
-        # Define the system prompt
         system_prompt = f"""
         You are a rehabilitation doctor specializing in {request.disease}. 
         The patient has answered the following questions regarding their condition:\n
@@ -147,7 +148,6 @@ async def chat(request: DetailedAssessmentRequest):
         Based on this, provide expert medical advice, suggest therapy, and offer emotional support.
         """
 
-        # Invoke Gemini API with structured input
         chat_history = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": "What should I do next?"}
