@@ -11,60 +11,60 @@ import {
 import { Button } from "@/components/ui/button";
 import { Brain, Target, Grid, Puzzle, Zap, Trophy, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ReflexRacer from "@/components/games/anxiety/ReflexRacer";
-import PatternHacker from "@/components/games/anxiety/PatternHacker";
-import MemoryGridBlitz from "@/components/games/anxiety/MemoryGridBlitz";
-import EmotionMazeRunner from "@/components/games/anxiety/EmotionMazeRunner";
-import ChaosCommander from "@/components/games/anxiety/ChaosCommander";
+import ColorRush from "@/components/games/depression/ColorRush";
+import WordSprint from "@/components/games/depression/WordSprint";
+import TreasureHunt from "@/components/games/depression/TreasureHunt";
+import PathBuilder from "@/components/games/depression/PathBuilder";
+import ShadowChase from "@/components/games/depression/ShadowChase";
 import { GameState, GameProgress } from "@/lib/types";
 
-const PASSING_SCORE = 3;
+const PASSING_SCORE = 1;
 
 const games = [
   {
     level: 1,
-    title: "Reflex Racer",
-    description: "Test your reaction time by tapping moving targets",
+    title: "Color Rush",
+    description: "Test your reaction time with fast-changing color prompts",
     icon: Target,
     color: "bg-pink-500",
     textColor: "text-pink-500",
-    component: ReflexRacer,
+    component: ColorRush,
   },
   {
     level: 2,
-    title: "Pattern Hacker",
-    description: "Match fast-changing visual patterns",
+    title: "Word Sprint",
+    description: "Form words from scrambled letters against the clock",
     icon: Grid,
     color: "bg-purple-500",
     textColor: "text-purple-500",
-    component: PatternHacker,
+    component: WordSprint,
   },
   {
     level: 3,
-    title: "Memory Grid Blitz",
-    description: "Test your memory with matching pairs",
+    title: "Treasure Hunt",
+    description: "Solve puzzles to discover hidden treasures",
     icon: Brain,
     color: "bg-blue-500",
     textColor: "text-blue-500",
-    component: MemoryGridBlitz,
+    component: TreasureHunt,
   },
   {
     level: 4,
-    title: "Emotion Maze Runner",
-    description: "Navigate through puzzles that test emotional intelligence",
+    title: "Path Builder",
+    description: "Connect tiles to create the perfect path",
     icon: Puzzle,
     color: "bg-green-500",
     textColor: "text-green-500",
-    component: EmotionMazeRunner,
+    component: PathBuilder,
   },
   {
     level: 5,
-    title: "Chaos Commander",
-    description: "Master multitasking under pressure",
+    title: "Shadow Chase",
+    description: "Outrun the shadows and collect light orbs",
     icon: Zap,
     color: "bg-orange-500",
     textColor: "text-orange-500",
-    component: ChaosCommander,
+    component: ShadowChase,
   },
 ];
 
@@ -74,20 +74,20 @@ const initialGameState: GameState = {
   highestUnlockedLevel: 1,
 };
 
-export default function Home() {
+export default function NewGames() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [selectedGame, setSelectedGame] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    const savedState = localStorage.getItem("gameState");
+    const savedState = localStorage.getItem("newGameState");
     if (savedState) {
       setGameState(JSON.parse(savedState));
     }
   }, []);
 
   const saveProgress = (newState: GameState) => {
-    localStorage.setItem("gameState", JSON.stringify(newState));
+    localStorage.setItem("newGameState", JSON.stringify(newState));
     setGameState(newState);
   };
 
@@ -130,11 +130,17 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-white mb-4">
-            Brain Training Suite
+            New Brain Training Games
           </h1>
           <p className="text-gray-300 text-lg">
-            Level up your cognitive abilities with engaging challenges
+            Challenge yourself with our latest cognitive exercises
           </p>
+          {/* <Button
+            className="mt-4 bg-white text-gray-900 hover:bg-gray-100"
+            onClick={() => (window.location.href = "/")}
+          >
+            Back to Classic Games
+          </Button> */}
         </div>
 
         {isPlaying && GameComponent ? (
