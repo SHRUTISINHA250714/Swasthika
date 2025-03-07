@@ -116,6 +116,12 @@ export default function DetailedAssessment({
           body: JSON.stringify({ disease, responses: {} }),
         });
 
+        const taskRessponse =  await fetch("/api/tasks/assign", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ disease, severity: "mild"}),
+        });
+
         if (!res.ok) {
           const errorText = await res.text();
           throw new Error(`Error ${res.status}: ${errorText}`);
