@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Sidebar from '@/app/PatientDashboard/layout/sidebar/Sidebar';
-import Header from '@/app/PatientDashboard/layout/header/Header';
-import React, { useState, ReactNode } from 'react';
-import './globals.css';
+import Sidebar from "@/app/PatientDashboard/layout/sidebar/Sidebar";
+import Header from "@/app/PatientDashboard/layout/header/Header";
+import React, { useState, ReactNode } from "react";
+import "./globals.css";
 
 interface RootLayoutProps {
   children?: ReactNode;
@@ -15,19 +15,24 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body className="bg-gray-100 text-gray-900">
-        <div className="flex min-h-screen w-full">
+        <div className="flex min-h-screen">
+          {/* Sidebar */}
           <Sidebar
-            isSidebarOpen={true} // Keeping the sidebar always open
+            isSidebarOpen={true}
             isMobileSidebarOpen={isMobileSidebarOpen}
             onSidebarClose={() => setMobileSidebarOpen(false)}
           />
-          <div className="flex flex-col flex-grow z-1 bg-transparent">
+
+          {/* Main content area */}
+          <div className="flex flex-col flex-1">
             <Header toggleMobileSidebar={() => setMobileSidebarOpen(true)} />
-            <div className="w-full max-w-full pt-5 px-0">
-              <div className="min-h-[calc(100vh-170px)] w-full flex p-0 m-0">
+
+            {/* Center content */}
+            <main className="flex-1 flex justify-center items-center p-8">
+              <div className="w-full min-w-4xl p-6 rounded-lg shadow-md">
                 {children}
               </div>
-            </div>
+            </main>
           </div>
         </div>
       </body>
