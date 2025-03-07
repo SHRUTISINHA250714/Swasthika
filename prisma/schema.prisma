@@ -233,3 +233,13 @@ model DailyTask {
 
   user        User     @relation(fields: [userId], references: [id])
 }
+
+model Streak {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  icon        String?   // Store icon as a string (e.g., URL or class name)
+  achieved    Boolean 
+  date        DateTime @default(now())
+}
+

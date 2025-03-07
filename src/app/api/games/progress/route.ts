@@ -3,7 +3,7 @@ import { db } from "@/lib/db"; // Prisma client
 import { auth } from "../../../../../auth";
 
 const session = await auth();
-const userId = await session?.user.id;
+const userId =  session?.user.id;
 
 export async function POST(req: Request) {
   try {
