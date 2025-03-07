@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import  prisma  from "@/lib/prisma" // Prisma client
+import  {db}  from "@/lib/db" // Prisma client
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const progress = await prisma.gameProgress.create({
+    const progress = await db.gameProgress.create({
       data: {
         userId,
         gameId,
@@ -66,7 +66,7 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "User ID is required" }, { status: 400 });
       }
   
-      const progress = await prisma.gameProgress.findMany({
+      const progress = await db.gameProgress.findMany({
         where: { userId, ...(gameType ? { gameType } : {}) },
         orderBy: { datePlayed: "desc" },
       });

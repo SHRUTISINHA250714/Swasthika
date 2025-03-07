@@ -93,7 +93,7 @@
 import { useState, useCallback } from "react";
 import Screening from "@/components/quiz";
 import Chat from "@/components/chatComponent";
-import DetailedAssessment from "@/components/detailedAssessment";
+import DetailedAssessment from "@//detailedAssessment";
 
 export default function Home() {
   const [detectedDiseases, setDetectedDiseases] = useState<string[]>([]);

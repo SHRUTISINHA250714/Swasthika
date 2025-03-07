@@ -61,10 +61,11 @@ const TaskManager = () => {
   const visibleCount = Math.min(currentGroup * GROUP_SIZE, activities.length);
 
   useEffect(() => {
-    fetch("/api/activities")
+   fetch("/api/tasks")
       .then((res) => res.json())
       .then((data) => {
         // If additional activities come from the API, ensure they follow the same schema.
+        console.log(data);
         const newActivities = data.map((act: any) => ({
           ...act,
           status: "pending",
