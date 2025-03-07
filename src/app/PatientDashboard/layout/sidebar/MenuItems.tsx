@@ -31,9 +31,9 @@ const Menuitems = [
     href: "/PatientDashboard/PatientPage/profile",
   },
   {
-    title: "Video Consultation",
+    title: "Video Recommendations",
     icon: IconVideo,
-    href: "/PatientDashboard/PatientPage/VideoConsultation",
+    href: "/youtube",
   },
   {
     title: "Disease Prediction",
