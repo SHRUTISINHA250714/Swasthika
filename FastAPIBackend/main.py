@@ -43,6 +43,11 @@ class DetailedAssessmentRequest(BaseModel):
     disease: str
     responses: Dict[str, str] 
 
+class chatRequest(BaseModel):
+    disease: str
+    responses:Dict[str, str]
+    chat_history: list[Dict[str, str]]=[]
+
 screening_questions = {
     "PTSD": "Have you experienced a traumatic event that still causes distress?",
     "Depression": "Have you been feeling sad, hopeless, or lost interest in activities you once enjoyed?",
@@ -132,39 +137,6 @@ async def detailed_assessment(request: DetailedAssessmentRequest):
         "questions": disease_specific_questions[disease]
     }
 
-
-# @app.post("/chat")
-# async def chat(request: DetailedAssessmentRequest):
-#     try:
-#         if not request.responses:
-#            raise HTTPException(status_code=400, detail="No responses p rovided")
-
-#         response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
-
-#         system_prompt = f"""
-#         You are a rehabilitation doctor specializing in {request.disease}. 
-#         The patient has answered the following questions regarding their condition:\n
-#         {response_text}
-        
-#         Based on this, provide expert medical advice, suggest therapy, and offer emotional support.
-#         Do not refer to any sort of person like as psycatrist, instead consider yourself as a doctor and ask the related questions and process them, if at the later stage, its too complicated than only refer to the doctor.otherwise,suggest things that the user can do by him self and keep it short and crisp.
-#         """
-
-#         chat_history = [
-#             {"role": "system", "content": system_prompt},
-#             {"role": "user", "content": "What should I do next?"}
-#         ]
-
-#         response = llm.invoke(chat_history)
-#         response_text = response.content if hasattr(response, "content") else str(response)
-
-#         return {"response": response_text}
-
-#     except Exception as e:
-#         print("Error:", e)
-#         raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.post("/diet")
 async def generate_diet_chart(request: DetailedAssessmentRequest):
     """
@@ -205,38 +177,51 @@ async def generate_diet_chart(request: DetailedAssessmentRequest):
 
 
 @app.post("/chat")
-async def chat(request: DetailedAssessmentRequest):
-    """
-    Handles chat interaction for mental health recovery.
-    """
+async def chat(request: chatRequest):
+    print("Received Request:", request) 
+
     try:
         if not request.responses:
             raise HTTPException(status_code=400, detail="No responses provided")
 
         response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
 
-        system_prompt = f"""
-        You are a rehabilitation coach helping users recover from {request.disease}.
-        The user has answered the following questions regarding their condition:\n
-        {response_text}
-        
-        Based on this, provide step-by-step recovery suggestions, emotional support, 
-        and self-improvement exercises. Do not refer to a psychiatrist or doctor.
-        Instead, guide the user on what they can do themselves.
-        
-        The user should be able to ask follow-up questions, and responses should be 
-        clear, short, and actionable.
-        """
+        if len(request.chat_history) == 1:
 
-        chat_history = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "What should I do next?"}
-        ]
+           system_prompt = f"""
+           You are a rehabilitation coach helping users recover from {request.disease}.
+           The user has answered the following questions regarding their condition:\n
+           {response_text}
+        
+           Based on this, provide step-by-step recovery suggestions,    emotional support, 
+           and self-improvement exercises. Do not refer to a psychiatrist or doctor.
+           Instead, guide the user on what they can do themselves.
+        
+           The user should be able to ask follow-up questions, and responses should be 
+           clear, short, and actionable in about 70-80 words.
+           """
+           chat_history=[{"role": "system", "content": system_prompt}]
+        else:
+            chat_history = request.chat_history
 
-        response = llm.invoke(chat_history)
+        print("Chat History Before Processing:", chat_history)
+        latest_message = (chat_history[-1]["content"] if chat_history else "What should I do next?")
+
+
+        chat_history.append({"role": "user", "content": latest_message})
+
+        formatted_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
+
+        response = llm.invoke(formatted_history)
+        if not response:
+         raise HTTPException(status_code=500, detail="LLM returned empty response")
+       
         response_text = response.content if hasattr(response, "content") else str(response)
+        
+        chat_history.append({"role": "bot", "content": response_text})
+        print("Chat History After Processing:", chat_history)
 
-        return {"response": response_text}
+        return {"response": response_text,"chat_history":chat_history}
 
     except Exception as e:
         print("Error:", e)

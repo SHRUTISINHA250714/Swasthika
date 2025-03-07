@@ -65,16 +65,20 @@ export default function Chat({ disease, responses }: { disease: string; response
   const [loading, setLoading] = useState(false);
 
   const handleChat = async () => {
+    if (!input.trim()) return;
     setLoading(true);
+    const updatedHistory = [...chatHistory, { role: "user", content: input }];
     try {
       const res = await fetch("http://127.0.0.1:8000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ disease, responses, chat_history: chatHistory })
+        body: JSON.stringify({ disease, responses, chat_history: updatedHistory })
       });
-
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
       const data = await res.json();
-      setChatHistory([...chatHistory, { role: "user", content: input }, { role: "bot", content: data.response }]);
+      setChatHistory([...updatedHistory,{ role: "bot", content: data.response }]);
     } catch (error) {
       console.error("Chat Request Failed:", error);
     } finally {
