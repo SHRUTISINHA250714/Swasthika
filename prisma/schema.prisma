@@ -192,8 +192,8 @@ model GameProgress {
   id               String   @id @default(uuid())  
   userId           String   // Player ID  
   gameId           String   // Unique Game Identifier  
-  gameType         String   // Quiz, Puzzle, Speed Challenge, etc.  
-  sessionId        String?  // Optional, for tracking multiple sessions  
+  // gameType         String   // Quiz, Puzzle, Speed Challenge, etc.  
+  // sessionId        String?  // Optional, for tracking multiple sessions  
   datePlayed       DateTime @default(now())  
 
   // Core Gameplay Metrics  
