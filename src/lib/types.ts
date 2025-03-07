@@ -27,7 +27,19 @@ export interface MemoryCard {
 }
 
 export interface MoodEntry {
-  mood: 'great' | 'good' | 'okay' | 'bad' | 'awful';
+  mood: "great" | "good" | "okay" | "bad" | "awful";
   timestamp: Date;
   note: string;
+}
+
+export interface GameProgress {
+  level: number;
+  score: number;
+  completed: boolean;
+}
+
+export interface GameState {
+  currentLevel: number;
+  progress: Record<number, GameProgress>;
+  highestUnlockedLevel: number;
 }
