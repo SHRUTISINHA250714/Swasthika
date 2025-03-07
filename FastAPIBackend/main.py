@@ -3,6 +3,8 @@ from fastapi import FastAPI, HTTPException
 from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel
 import os
+import re
+import json
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
@@ -137,6 +139,16 @@ async def detailed_assessment(request: DetailedAssessmentRequest):
         "questions": disease_specific_questions[disease]
     }
 
+def clean_and_format_response(text):
+           text = text.replace("*", "")
+    
+           text = re.sub(r'•\s*', '\n• ', text)  
+           text = re.sub(r'\d+\.\s*', lambda x: f"\n{x.group()}", text)  
+    
+           text = re.sub(r'\n\s*\n', '\n', text) 
+           text = text.strip() 
+
+           return text
 @app.post("/diet")
 async def generate_diet_chart(request: DetailedAssessmentRequest):
     """
@@ -146,19 +158,31 @@ async def generate_diet_chart(request: DetailedAssessmentRequest):
         response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
 
         diet_prompt = f"""
-        You are a dietary expert specializing in creating health-focused meal plans.
+        You are a dietary expert specializing in health-focused meal plans.
         The patient has been diagnosed with {request.disease} and provided the following details:\n
         {response_text}
         
-        Based on this information, suggest a structured diet plan that:
-        - Is simple and easy to follow.
-        - Avoids any references to doctors or medical professionals.
-        - Contains breakfast, lunch, dinner, and snack options.
-        - Includes key nutrients essential for managing {request.disease}.
-        - Avoids foods that may worsen the condition.
-        - Provides alternative food choices if necessary.
+        Based on this, provide a structured diet plan in **strict JSON format**:
 
-        Ensure the response is formatted properly, short, and crisp.
+        {{
+          "focus": "Brief description of the diet focus for {request.disease}",
+          "keyNutrients": ["Nutrient 1", "Nutrient 2", "Nutrient 3"],
+          "foodsToLimit": ["Food 1", "Food 2", "Food 3"],
+          "mealPlan": {{
+            "breakfast": [{{ "option": "Meal 1" }}, {{ "option": "Meal 2" }}],
+            "lunch": [{{ "option": "Meal 1" }}, {{ "option": "Meal 2" }}],
+            "dinner": [{{ "option": "Meal 1" }}, {{ "option": "Meal 2" }}],
+            "snacks": [{{ "option": "Snack 1" }}, {{ "option": "Snack 2" }}]
+          }},
+          "importantConsiderations": {{
+            "hydration": "Hydration advice",
+            "regularMeals": "Meal consistency advice",
+            "portionControl": "Portion control tips",
+            "listenToYourBody": "Listening to hunger and fullness cues"
+          }}
+        }}
+
+        **Only return a valid JSON object. No extra text.**
         """
 
         chat_history = [
@@ -167,10 +191,20 @@ async def generate_diet_chart(request: DetailedAssessmentRequest):
         ]
 
         response = llm.invoke(chat_history)
-        response_text = response.content if hasattr(response, "content") else str(response)
+        print("Raw LLM Response:", response)
 
+        # response_text = response.content if hasattr(response, "content") else str(response)
+
+        # response_text = clean_and_format_response(response_text)
+        # return {"diet_plan": response_text}
+        # Ensure response contains valid JSON format
+        if not hasattr(response, "content"):
+            raise ValueError("Invalid response from LLM")
+        response_text = response.content.strip()
+        print("Cleaned LLM Response:", response_text)
+
+        response_text = clean_and_format_response(response_text)
         return {"diet_plan": response_text}
-
     except Exception as e:
         print("Error:", e)
         raise HTTPException(status_code=500, detail=str(e))
@@ -197,8 +231,10 @@ async def chat(request: chatRequest):
            and self-improvement exercises. Do not refer to a psychiatrist or doctor.
            Instead, guide the user on what they can do themselves.
         
-           The user should be able to ask follow-up questions, and responses should be 
-           clear, short, and actionable in about 70-80 words.
+           The user should be able to ask follow-up questions, and 
+            Your response **must be concise and within 100 words**.
+            Use **short sentences and bullet points** if necessary.
+            Keep your answer **clear and actionable**.
            """
            chat_history=[{"role": "system", "content": system_prompt}]
         else:
@@ -211,6 +247,8 @@ async def chat(request: chatRequest):
         chat_history.append({"role": "user", "content": latest_message})
 
         formatted_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
+ 
+        formatted_history += "\n\nPlease keep your response within 100 words."
 
         response = llm.invoke(formatted_history)
         if not response:
@@ -218,6 +256,7 @@ async def chat(request: chatRequest):
        
         response_text = response.content if hasattr(response, "content") else str(response)
         
+        response_text = clean_and_format_response(response_text)
         chat_history.append({"role": "bot", "content": response_text})
         print("Chat History After Processing:", chat_history)
 
