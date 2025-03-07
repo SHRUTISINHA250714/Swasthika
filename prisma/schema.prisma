@@ -200,13 +200,13 @@ model GameProgress {
   score            Int      @default(0)  
   completion       Boolean  @default(false)  
   timeSpent        Int?     // Time in seconds  
-  accuracy         Int?     // % of correct answers  
+  accuracy         Float?     // % of correct answers  
   difficulty       String   // Easy, Medium, Hard, Adaptive  
   streak           Int?     @default(0) // Consecutive days played  
 
   // Engagement & Behavioral Metrics  
-  retries         Int?      @default(0) // Number of retries
-  dropOff         Boolean   @default(false) // True if user quits before finishing
+  // retries         Int?      @default(0) // Number of retries
+  dropOffRate         Float   @default(0) // True if user quits before finishing
   frustrationScore Int?     // Tracks frustration level (rage quits, retries)
 
   // Gamification & Achievements  
