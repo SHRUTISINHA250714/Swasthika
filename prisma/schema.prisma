@@ -24,10 +24,50 @@ model User {
   doctor           Doctor?           @relation("DoctorPatients", fields: [doctorId], references: [id])
   doctorId         String?
 
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
   GameProgress GameProgress[]
 
   DailyTask DailyTask[]
 }
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  
+  type               String
+  provider           String
+  providerAccountId  String 
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+ 
+}
+
+model VerificationToken {
+  id        String  @id @default(cuid())
+  email     String
+  token     String @unique
+  expires   DateTime
+  
+  @@unique([email, token])
+}
+model PasswordResetToken {
+  id        String  @id @default(cuid())
+  email     String
+  token     String @unique
+  expires   DateTime
+  
+  @@unique([email, token])
+}
+
 
 enum Role {
   PATIENT
@@ -152,21 +192,21 @@ model GameProgress {
   id               String   @id @default(uuid())  
   userId           String   // Player ID  
   gameId           String   // Unique Game Identifier  
-  gameType         String   // Quiz, Puzzle, Speed Challenge, etc.  
-  sessionId        String?  // Optional, for tracking multiple sessions  
+  // gameType         String   // Quiz, Puzzle, Speed Challenge, etc.  
+  // sessionId        String?  // Optional, for tracking multiple sessions  
   datePlayed       DateTime @default(now())  
 
   // Core Gameplay Metrics  
   score            Int      @default(0)  
   completion       Boolean  @default(false)  
   timeSpent        Int?     // Time in seconds  
-  accuracy         Int?     // % of correct answers  
+  accuracy         Float?     // % of correct answers  
   difficulty       String   // Easy, Medium, Hard, Adaptive  
   streak           Int?     @default(0) // Consecutive days played  
 
   // Engagement & Behavioral Metrics  
-  retries         Int?      @default(0) // Number of retries
-  dropOff         Boolean   @default(false) // True if user quits before finishing
+  // retries         Int?      @default(0) // Number of retries
+  dropOffRate         Float   @default(0) // True if user quits before finishing
   frustrationScore Int?     // Tracks frustration level (rage quits, retries)
 
   // Gamification & Achievements  
@@ -193,3 +233,13 @@ model DailyTask {
 
   user        User     @relation(fields: [userId], references: [id])
 }
+
+model Streak {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  icon        String?   // Store icon as a string (e.g., URL or class name)
+  achieved    Boolean 
+  date        DateTime @default(now())
+}
+

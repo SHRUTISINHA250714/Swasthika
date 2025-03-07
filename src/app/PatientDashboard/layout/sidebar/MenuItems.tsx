@@ -16,6 +16,11 @@ const Menuitems = [
     subheader: "PATIENT DASHBOARD",
   },
   {
+    title: "Landing Page",
+    icon: IconHome2,
+    href: "/LandingPage",
+  },
+  {
     title: "Patient Dashboard",
     icon: IconHome2,
     href: "/",
@@ -26,14 +31,19 @@ const Menuitems = [
     href: "/PatientDashboard/PatientPage/profile",
   },
   {
-    title: "Video Consultation",
+    title: "Video Recommendations",
     icon: IconVideo,
-    href: "/PatientDashboard/PatientPage/VideoConsultation",
+    href: "/youtube",
   },
   {
     title: "Disease Prediction",
     icon: IconHeartbeat,
     href: "/PatientDashboard/DiseasePrediction",
+  },
+  {
+    title: "AI BOT",
+    icon: IconHeartbeat,
+    href: "/AIBot",
   },
   {
     title: "Exercise & Activity",

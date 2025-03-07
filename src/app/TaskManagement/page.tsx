@@ -1,74 +1,49 @@
+
 'use client';
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface Activity {
   id: number;
   title: string;
   description: string;
-  status: "pending" | "completed" | "skipped"|string;
+  status: "pending" | "completed" | "skipped" | string;
   hasTaken: boolean;
+  videoQuery: string;
+  day: number;
 }
 
-const defaultActivities: Activity[] = [
-  {
-    id: 1,
-    title: "Morning Walk",
-    description: "Take a 30-minute brisk walk to start your day fresh.",
-    status: "pending",
-    hasTaken: false,
-  },
-  {
-    id: 2,
-    title: "Healthy Breakfast",
-    description: "Eat a nutritious breakfast with fruits and proteins.",
-    status: "pending",
-    hasTaken: false,
-  },
-  {
-    id: 3,
-    title: "Read a Book",
-    description: "Spend 20 minutes reading a book of your choice.",
-    status: "pending",
-    hasTaken: false,
-  },
-  {
-    id: 4,
-    title: "Meditation",
-    description: "Practice 10 minutes of mindfulness meditation.",
-    status: "pending",
-    hasTaken: false,
-  },
-  {
-    id: 5,
-    title: "Plan the Day",
-    description: "Set your priorities and plan your tasks for the day.",
-    status: "pending",
-    hasTaken: false,
-  },
-];
+const defaultActivities: Activity[] = Array.from({ length: 7 }, (_, dayIndex) => ({
+  id: dayIndex + 1,
+  title: `Activity for Day ${dayIndex + 1}`,
+  description: `Description for activity on Day ${dayIndex + 1}.`,
+  status: "pending",
+  hasTaken: false,
+  videoQuery: "sample video query",
+  day: dayIndex + 1,
+}));
 
 const GROUP_SIZE = 2;
 
 const TaskManager = () => {
   const [activities, setActivities] = useState<Activity[]>(defaultActivities);
   const [loading, setLoading] = useState(true);
-  // currentGroup indicates how many sequential groups (of 2 cards each) are unlocked.
   const [currentGroup, setCurrentGroup] = useState(1);
 
-  // visibleCount defines the number of unlocked (unblurred) cards.
-  const visibleCount = Math.min(currentGroup * GROUP_SIZE, activities.length);
-
   useEffect(() => {
-    fetch("/api/activities")
+   fetch("/api/tasks")
       .then((res) => res.json())
       .then((data) => {
         // If additional activities come from the API, ensure they follow the same schema.
+        console.log(data);
         const newActivities = data.map((act: any) => ({
           ...act,
           status: "pending",
           hasTaken: false,
+          day: act.day || 1,
+          videoQuery: act.videoQuery || "default video",
         }));
         setActivities([...defaultActivities, ...newActivities]);
         setLoading(false);
@@ -76,7 +51,6 @@ const TaskManager = () => {
       .catch(() => setLoading(false));
   }, []);
 
-  // Checks if all tasks in the current unlocked group are no longer pending.
   const checkAndUnlockNextGroup = (updatedActivities: Activity[]) => {
     const startIndex = (currentGroup - 1) * GROUP_SIZE;
     const groupTasks = updatedActivities.slice(startIndex, startIndex + GROUP_SIZE);
@@ -89,16 +63,6 @@ const TaskManager = () => {
     }
   };
 
-  // This handler marks an activity as "taken" when the user clicks the "Take the Activity Now" button.
-  const handleTakeActivity = (id: number) => {
-    setActivities((prev) =>
-      prev.map((activity) =>
-        activity.id === id ? { ...activity, hasTaken: true } : activity
-      )
-    );
-  };
-
-  // Marks the activity as "completed". Only enabled if the activity has been taken.
   const handleCompletion = (id: number) => {
     setActivities((prev) => {
       const updated = prev.map((activity) =>
@@ -109,7 +73,6 @@ const TaskManager = () => {
     });
   };
 
-  // Marks the activity as "skipped" (formerly "missed").
   const handleMissed = (id: number) => {
     setActivities((prev) => {
       const updated = prev.map((activity) =>
@@ -127,12 +90,11 @@ const TaskManager = () => {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-8 text-center text-blue-700">
-        Task Manager
+        Task Manager - 7 Day Challenge
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {activities.map((activity, index) => {
-          // Cards with index less than visibleCount are unlocked.
-          const isUnlocked = index < visibleCount;
+          const isUnlocked = index < currentGroup * GROUP_SIZE;
           const cardClasses = isUnlocked
             ? activity.status === "completed"
               ? "bg-green-200 border-green-400"
@@ -154,27 +116,26 @@ const TaskManager = () => {
                 </h2>
                 <p className="text-gray-700 mb-4">{activity.description}</p>
                 <span
-                    className={`text-xl  font-bold ${
-                      activity.status === "completed"
-                        ? "text-green-700"
-                        : activity.status === "skipped"
-                        ? "text-red-700"
-                        : "text-blue-700"
-                    }`}
-                  >
-                    {activity.status === "completed"
-                      ? "Completed"
+                  className={`text-xl font-bold ${
+                    activity.status === "completed"
+                      ? "text-green-700"
                       : activity.status === "skipped"
-                      ? "Skipped"
-                      : "Pending"}
-                  </span>
-                <div className="flex items-center mt-4 justify-start">
-                 
+                      ? "text-red-700"
+                      : "text-blue-700"
+                  }`}
+                >
+                  {activity.status === "completed"
+                    ? "Completed"
+                    : activity.status === "skipped"
+                    ? "Skipped"
+                    : "Pending"}
+                </span>
+                <div className="flex items-center mt-4 justify-start gap-2">
                   {isUnlocked && (
-                    <div className="flex gap-2 justify-center items-center">
+                    <>
                       <Button
                         onClick={() => handleCompletion(activity.id)}
-                        disabled={activity.status !== "pending" || !activity.hasTaken}
+                        disabled={activity.status !== "pending"}
                         className="bg-green-400 text-white semibold px-4 py-2 rounded-lg transition-transform transform hover:scale-105 disabled:opacity-80"
                       >
                         Done
@@ -186,18 +147,17 @@ const TaskManager = () => {
                       >
                         Skip
                       </Button>
-                      <Button
-                        onClick={() => handleTakeActivity(activity.id)}
-                        disabled={activity.hasTaken || activity.status !== "pending"}
-                        className="bg-blue-400 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 disabled:opacity-80"
-                      >
-                        Take the Activity Now
-                      </Button>
-                    </div>
+                      <Link href={`/pages/video?query=${encodeURIComponent(activity.videoQuery)}`}>
+                        <Button
+                          className="bg-purple-400 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
+                        >
+                          Watch Video
+                        </Button>
+                      </Link>
+                    </>
                   )}
                 </div>
               </motion.div>
-              {/* Locked cards get a lock overlay */}
               {!isUnlocked && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <span className="text-4xl text-gray-600">🔒</span>

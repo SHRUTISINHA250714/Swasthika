@@ -131,7 +131,7 @@ const Level: React.FC<LevelProps> = ({ title, challenges }) => {
         open={showEducation}
         onOpenChange={(open) => {
           setShowEducation(open);
-          if (!open) router.push("/");
+          if (!open) router.push("/rehab");
         }}
       >
         <WrongAnswerDialog
@@ -154,7 +154,10 @@ const Level: React.FC<LevelProps> = ({ title, challenges }) => {
                 <li>Each barrier you build makes you stronger</li>
               </ul>
               <div className="mt-6">
-                <Button onClick={() => router.push("/")} className="w-full">
+                <Button
+                  onClick={() => router.push("/rehab")}
+                  className="w-full"
+                >
                   Continue to Next Level
                 </Button>
               </div>

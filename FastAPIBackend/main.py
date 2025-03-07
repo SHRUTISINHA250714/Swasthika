@@ -107,6 +107,31 @@ disease_specific_questions = {
         "Do you feel guilt or shame after eating?",
         "Do you use extreme methods (fasting, purging, excessive exercise) to control weight?"
     ],
+    "Stress": [
+        "Do you feel constantly pressured, even with small tasks?",
+        "Do you struggle to relax, even when you have free time?",
+        "Do you experience frequent headaches, muscle tension, or fatigue?"
+    ],
+    "Drug Recovery": [
+        "Do you experience intense urges to use drugs despite your commitment to recovery?",
+        "Do you feel tempted to return to old habits when facing emotional distress?",
+        "Do you struggle with maintaining motivation to stay sober?"
+    ],
+    "Anorexia Nervosa": [
+        "Do you often skip meals or eat significantly less than your body needs?",
+        "Do you feel intense fear or distress at the thought of gaining weight?",
+        "Do you exercise excessively to control your weight?"
+    ],
+    "Bulimia Nervosa": [
+        "Do you eat large amounts of food in a short time and feel out of control?",
+        "Do you use vomiting, fasting, or excessive exercise to compensate for overeating?",
+        "Do you feel ashamed or guilty after binge episodes?"
+    ],
+    "Binge Eating Disorder": [
+        "Do you eat until you feel uncomfortably full, even when not hungry?",
+        "Do you eat large amounts of food in secret or alone due to embarrassment?",
+        "Do you feel guilt, disgust, or shame after binge eating?"
+    ]
 }
 @app.get("/screening-questions")
 async def get_screening_questions():
@@ -209,7 +234,7 @@ async def generate_diet_chart(request: DetailedAssessmentRequest):
         print("Error:", e)
         raise HTTPException(status_code=500, detail=str(e))
 
-
+# BEFORE CHANGES FOR FORMATTING
 @app.post("/chat")
 async def chat(request: chatRequest):
     print("Received Request:", request) 
@@ -218,7 +243,8 @@ async def chat(request: chatRequest):
         if not request.responses:
             raise HTTPException(status_code=400, detail="No responses provided")
 
-        response_text = "\n".join([f"{q}: {a}" for q, a in request.responses.items()])
+        # Format patient responses as a bullet list
+        response_text = "\n".join([f"- **{q}**: {a}" for q, a in request.responses.items()])
 
         if len(request.chat_history) == 1:
 
@@ -265,3 +291,6 @@ async def chat(request: chatRequest):
     except Exception as e:
         print("Error:", e)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+

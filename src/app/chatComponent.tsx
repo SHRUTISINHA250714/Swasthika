@@ -66,6 +66,7 @@ export default function Chat({ disease, responses }: { disease: string; response
 
   const handleChat = async () => {
     if (!input.trim()) return;
+    if (!input.trim()) return;
     setLoading(true);
     const updatedHistory = [...chatHistory, { role: "user", content: input }];
     try {
