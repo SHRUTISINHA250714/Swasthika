@@ -16,6 +16,11 @@ const Menuitems = [
     subheader: "PATIENT DASHBOARD",
   },
   {
+    title: "Landing Page",
+    icon: IconHome2,
+    href: "/LandingPage",
+  },
+  {
     title: "Patient Dashboard",
     icon: IconHome2,
     href: "/",
@@ -34,6 +39,11 @@ const Menuitems = [
     title: "Disease Prediction",
     icon: IconHeartbeat,
     href: "/PatientDashboard/DiseasePrediction",
+  },
+  {
+    title: "AI BOT",
+    icon: IconHeartbeat,
+    href: "/AIBot",
   },
   {
     title: "Exercise & Activity",
